@@ -1,0 +1,123 @@
+<!-- Navbar -->
+<nav class="navbar">
+  <a routerLink="/" class="nav-brand">🍳 RecipeShare</a>
+  <div class="nav-links">
+    @if (isLoggedIn()) {
+      <span class="nav-user">👤 {{ currentUser()?.username }}</span>
+      <a routerLink="/recipe/new" class="btn-nav-cta">+ New Recipe</a>
+      <button class="btn-nav-ghost" (click)="logout()">Sign out</button>
+    } @else {
+      <a routerLink="/login" class="btn-nav-ghost">Sign in</a>
+      <a routerLink="/register" class="btn-nav-cta">Join free</a>
+    }
+  </div>
+</nav>
+
+<!-- Hero Banner -->
+<header class="hero-banner">
+  <div class="hero-content">
+    <h1>Discover &amp; Share <span class="accent">Amazing Recipes</span></h1>
+    <p>Browse thousands of community recipes or share your own culinary creations.</p>
+
+    <!-- Search -->
+    <form class="search-bar" (ngSubmit)="search()">
+      <input
+        id="search-input"
+        type="text"
+        [(ngModel)]="searchQuery"
+        name="q"
+        placeholder="Search for recipes…"
+        autocomplete="off"
+      />
+      <button type="submit" id="search-btn">Search</button>
+    </form>
+
+    <!-- Category chips -->
+    <div class="category-chips">
+      <button
+        class="chip"
+        [class.active]="selectedCategory() === undefined"
+        (click)="selectCategory(undefined)"
+      >
+        All
+      </button>
+      @for (cat of categories(); track cat.categoryId) {
+        <button
+          class="chip"
+          [class.active]="selectedCategory() === cat.categoryId"
+          (click)="selectCategory(cat.categoryId)"
+        >
+          {{ cat.name }}
+        </button>
+      }
+    </div>
+  </div>
+</header>
+
+<!-- Main content -->
+<main class="content">
+  @if (loading()) {
+    <div class="center-msg">
+      <div class="spinner"></div>
+      <p>Loading recipes…</p>
+    </div>
+  } @else if (error()) {
+    <div class="center-msg error-msg">
+      <p>{{ error() }}</p>
+    </div>
+  } @else if (recipes().length === 0) {
+    <div class="center-msg">
+      <p class="muted">No recipes found. Try a different search!</p>
+    </div>
+  } @else {
+    <div class="results-info">
+      <span>{{ total() }} recipe{{ total() !== 1 ? 's' : '' }} found</span>
+      @if (searchQuery.trim()) {
+        <span>
+          for "<strong>{{ searchQuery }}</strong
+          >"</span
+        >
+      }
+    </div>
+
+    <div class="recipe-grid">
+      @for (r of recipes(); track r.recipeId) {
+        <a [routerLink]="['/recipe', r.recipeId]" class="recipe-card" id="recipe-{{ r.recipeId }}">
+          <div class="card-img-wrap">
+            @if (r.imageUrl) {
+              <img [src]="r.imageUrl | imageUrl" [alt]="r.title" class="card-img" loading="lazy" />
+            } @else {
+              <div class="card-img-placeholder">🍽️</div>
+            }
+          </div>
+          <div class="card-body">
+            <div class="card-cats">
+              @for (cat of r.categories.slice(0, 2); track cat) {
+                <span class="card-cat">{{ cat }}</span>
+              }
+            </div>
+            <h2 class="card-title">{{ r.title }}</h2>
+            <div class="card-meta">
+              <span class="card-author">👤 {{ r.authorUsername }}</span>
+              <span class="card-rating">
+                ⭐ {{ r.averageRating | number: '1.1-1' }}
+                <span class="muted">({{ r.ratingCount }})</span>
+              </span>
+            </div>
+          </div>
+        </a>
+      }
+    </div>
+
+    <!-- Pagination -->
+    @if (totalPages > 1) {
+      <div class="pagination">
+        <button id="prev-page" (click)="prevPage()" [disabled]="page() === 1">← Prev</button>
+        <span>Page {{ page() }} of {{ totalPages }}</span>
+        <button id="next-page" (click)="nextPage()" [disabled]="page() === totalPages">
+          Next →
+        </button>
+      </div>
+    }
+  }
+</main>

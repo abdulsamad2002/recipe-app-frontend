@@ -1,0 +1,158 @@
+@if (loading()) {
+  <div class="page-center">
+    <div class="spinner"></div>
+    <p>Loading recipe…</p>
+  </div>
+} @else if (error()) {
+  <div class="page-center">
+    <p class="error-text">{{ error() }}</p>
+    <a routerLink="/" class="back-link">← Back to recipes</a>
+  </div>
+} @else if (recipe(); as r) {
+  <div class="detail-page">
+    <!-- Hero -->
+    <div class="hero">
+      @if (r.imageUrl) {
+        <img class="hero-img" [src]="r.imageUrl | imageUrl" [alt]="r.title" />
+      }
+      <div class="hero-body" [class.no-img]="!r.imageUrl">
+        <div class="cats">
+          @for (cat of r.categories; track cat) {
+            <span class="cat-badge">{{ cat }}</span>
+          }
+        </div>
+        <h1 class="recipe-title">{{ r.title }}</h1>
+        <p class="recipe-desc">{{ r.description }}</p>
+        <div class="meta">
+          <span class="avatar">{{ r.authorUsername.charAt(0).toUpperCase() }}</span>
+          <span
+            >by <strong>{{ r.authorUsername }}</strong></span
+          >
+          <span class="dot">·</span>
+          <span class="muted">{{ r.createdAt | date: 'mediumDate' }}</span>
+          <span class="dot">·</span>
+          <span class="rating-chip"
+            >⭐ {{ r.averageRating | number: '1.1-1' }} ({{ r.ratingCount }})</span
+          >
+        </div>
+        @if (isOwner()) {
+          <div class="owner-actions">
+            <a [routerLink]="['/recipe', r.recipeId, 'edit']" class="btn-edit">✏️ Edit</a>
+            <button class="btn-delete" (click)="deleteRecipe()">🗑 Delete</button>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="body-grid">
+      <!-- Ingredients -->
+      <section class="card">
+        <h2>🥄 Ingredients</h2>
+        <ul class="ingredient-list">
+          @for (ing of r.ingredients; track ing.name) {
+            <li>
+              <span class="ing-name">{{ ing.name }}</span>
+              <span class="ing-qty">{{ ing.quantity }}</span>
+            </li>
+          }
+        </ul>
+      </section>
+
+      <!-- Steps -->
+      <section class="card steps-card">
+        <h2>📋 Instructions</h2>
+        <ol class="steps-list">
+          @for (step of r.steps; track $index) {
+            <li>{{ step }}</li>
+          }
+        </ol>
+      </section>
+
+      <!-- Rating widget -->
+      <section class="card rating-card">
+        <h2>⭐ Rate this recipe</h2>
+        @if (isLoggedIn()) {
+          <div class="star-widget">
+            @for (s of stars; track s) {
+              <button
+                class="star-btn"
+                [class.filled]="s <= (hoverRating() || userRating())"
+                (mouseenter)="hoverRating.set(s)"
+                (mouseleave)="hoverRating.set(0)"
+                (click)="setRating(s)"
+                [disabled]="ratingLoading()"
+                [attr.aria-label]="'Rate ' + s + ' stars'"
+              >
+                ★
+              </button>
+            }
+          </div>
+          @if (userRating()) {
+            <p class="rated-msg">You rated this {{ userRating() }}/5 ⭐</p>
+          }
+        } @else {
+          <p class="muted"><a routerLink="/login">Sign in</a> to rate this recipe.</p>
+        }
+        <div class="rating-summary">
+          <span class="big-score">{{ r.averageRating | number: '1.1-1' }}</span>
+          <span class="muted">average · {{ r.ratingCount }} ratings</span>
+        </div>
+      </section>
+
+      <!-- Comments -->
+      <section class="card comments-card">
+        <h2>💬 Comments</h2>
+
+        @if (isLoggedIn()) {
+          <div class="comment-form">
+            <textarea
+              id="new-comment"
+              [(ngModel)]="newComment"
+              placeholder="Share your thoughts…"
+              rows="3"
+            ></textarea>
+            @if (commentError()) {
+              <p class="error-text small">{{ commentError() }}</p>
+            }
+            <button
+              class="btn-primary"
+              (click)="submitComment()"
+              [disabled]="commentLoading() || !newComment.trim()"
+            >
+              {{ commentLoading() ? 'Posting…' : 'Post comment' }}
+            </button>
+          </div>
+        } @else {
+          <p class="muted"><a routerLink="/login">Sign in</a> to leave a comment.</p>
+        }
+
+        <div class="comment-list">
+          @for (c of comments(); track c.commentId) {
+            <div class="comment">
+              <div class="comment-header">
+                <span class="c-avatar">{{ c.username.charAt(0).toUpperCase() }}</span>
+                <div>
+                  <p class="c-author">{{ c.username }}</p>
+                  <p class="c-date">{{ c.createdAt | date: 'mediumDate' }}</p>
+                </div>
+                @if (currentUser()?.userId === c.userId) {
+                  <button
+                    class="c-delete"
+                    (click)="deleteComment(c.commentId)"
+                    aria-label="Delete comment"
+                  >
+                    ✕
+                  </button>
+                }
+              </div>
+              <p class="c-body">{{ c.body }}</p>
+            </div>
+          }
+          @if (comments().length === 0) {
+            <p class="muted">No comments yet. Be the first!</p>
+          }
+        </div>
+      </section>
+    </div>
+  </div>
+}

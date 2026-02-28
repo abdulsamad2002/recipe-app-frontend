@@ -1,0 +1,269 @@
+:host { display: block; font-family: 'Segoe UI', system-ui, sans-serif; }
+
+/* ── Navbar ─────────────────────────────────────────────────────────────── */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .875rem 1.5rem;
+  background: rgba(255,255,255,.9);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid #fde68a;
+  box-shadow: 0 2px 12px rgba(0,0,0,.05);
+}
+
+.nav-brand {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #92400e;
+  text-decoration: none;
+}
+
+.nav-links { display: flex; align-items: center; gap: .75rem; }
+.nav-user  { font-size: .875rem; color: #78716c; font-weight: 500; }
+
+.btn-nav-cta {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  color: #fff;
+  padding: .45rem 1rem;
+  border-radius: .5rem;
+  font-size: .875rem;
+  font-weight: 700;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: opacity .2s;
+}
+.btn-nav-cta:hover { opacity: .88; }
+
+.btn-nav-ghost {
+  background: transparent;
+  border: 1.5px solid #d6d3d1;
+  color: #44403c;
+  padding: .45rem 1rem;
+  border-radius: .5rem;
+  font-size: .875rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color .2s, color .2s;
+}
+.btn-nav-ghost:hover { border-color: #d97706; color: #b45309; }
+
+/* ── Hero ─────────────────────────────────────────────────────────────────── */
+.hero-banner {
+  background: linear-gradient(135deg, #92400e 0%, #d97706 60%, #fbbf24 100%);
+  padding: 4rem 1.5rem 3rem;
+  text-align: center;
+  color: #fff;
+}
+
+.hero-content { max-width: 680px; margin: auto; }
+
+.hero-banner h1 {
+  font-size: clamp(1.75rem, 4vw, 3rem);
+  font-weight: 900;
+  margin: 0 0 .75rem;
+  line-height: 1.2;
+}
+
+.accent { color: #fef3c7; }
+
+.hero-banner p {
+  font-size: 1.0625rem;
+  opacity: .9;
+  margin: 0 0 2rem;
+}
+
+/* Search */
+.search-bar {
+  display: flex;
+  max-width: 520px;
+  margin: 0 auto 1.5rem;
+  border-radius: .75rem;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0,0,0,.2);
+}
+
+.search-bar input {
+  flex: 1;
+  padding: .85rem 1.1rem;
+  font-size: 1rem;
+  border: none;
+  outline: none;
+  color: #1c1917;
+}
+
+.search-bar button {
+  padding: .85rem 1.4rem;
+  background: #1c1917;
+  color: #fbbf24;
+  font-weight: 700;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: background .2s;
+}
+.search-bar button:hover { background: #292524; }
+
+/* Category chips */
+.category-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .5rem;
+}
+
+.chip {
+  background: rgba(255,255,255,.2);
+  border: 1.5px solid rgba(255,255,255,.35);
+  color: #fff;
+  padding: .35rem .9rem;
+  border-radius: 99px;
+  font-size: .8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .2s, border-color .2s;
+}
+.chip:hover, .chip.active {
+  background: #fff;
+  color: #92400e;
+  border-color: #fff;
+}
+
+/* ── Main Content ────────────────────────────────────────────────────────── */
+.content {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+.center-msg {
+  min-height: 40vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .75rem;
+  color: #78716c;
+}
+.error-msg { color: #b91c1c; }
+.muted     { color: #a8a29e; }
+
+.spinner {
+  width: 40px; height: 40px;
+  border: 3px solid #fde68a;
+  border-top-color: #d97706;
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.results-info {
+  font-size: .9rem;
+  color: #78716c;
+  margin-bottom: 1.5rem;
+}
+
+/* ── Recipe Grid ──────────────────────────────────────────────────────────── */
+.recipe-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.recipe-card {
+  background: #fff;
+  border-radius: 1rem;
+  border: 1px solid #fde68a;
+  overflow: hidden;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 18px rgba(0,0,0,.07);
+  transition: transform .2s, box-shadow .2s;
+}
+.recipe-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 36px rgba(0,0,0,.13);
+}
+
+.card-img-wrap { height: 180px; overflow: hidden; background: #fef3c7; }
+.card-img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform .4s;
+}
+.recipe-card:hover .card-img { transform: scale(1.05); }
+.card-img-placeholder {
+  width: 100%; height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+}
+
+.card-body { padding: 1rem; display: flex; flex-direction: column; gap: .4rem; flex: 1; }
+
+.card-cats { display: flex; flex-wrap: wrap; gap: .3rem; }
+.card-cat {
+  background: #fef3c7;
+  color: #92400e;
+  font-size: .65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  padding: .15rem .5rem;
+  border-radius: 99px;
+  border: 1px solid #fde68a;
+}
+
+.card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1c1917;
+  margin: .25rem 0 0;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: .75rem;
+  font-size: .8125rem;
+  color: #78716c;
+}
+.card-rating { font-weight: 600; color: #1c1917; }
+.card-rating .muted { font-weight: 400; color: #a8a29e; }
+
+/* ── Pagination ──────────────────────────────────────────────────────────── */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  margin-top: 3rem;
+  font-size: .9375rem;
+  color: #44403c;
+}
+.pagination button {
+  padding: .55rem 1.25rem;
+  border: 1.5px solid #d6d3d1;
+  border-radius: .5rem;
+  background: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+}
+.pagination button:hover:not(:disabled) { border-color: #d97706; color: #b45309; }
+.pagination button:disabled { opacity: .4; cursor: not-allowed; }

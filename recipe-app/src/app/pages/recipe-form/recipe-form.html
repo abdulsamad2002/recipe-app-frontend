@@ -1,0 +1,120 @@
+<div class="form-page">
+  <div class="form-card">
+    <div class="form-header">
+      <a routerLink="/" class="back-link">← Back</a>
+      <h1>{{ isEdit ? 'Edit Recipe' : 'New Recipe' }}</h1>
+    </div>
+
+    @if (error()) {
+      <div class="error-banner">{{ error() }}</div>
+    }
+
+    <form (ngSubmit)="submit()" novalidate>
+      <!-- Title -->
+      <div class="field">
+        <label for="title">Title *</label>
+        <input
+          id="title"
+          type="text"
+          [(ngModel)]="title"
+          name="title"
+          placeholder="Fluffy Pancakes"
+          required
+        />
+      </div>
+
+      <!-- Description -->
+      <div class="field">
+        <label for="description">Description</label>
+        <textarea
+          id="description"
+          [(ngModel)]="description"
+          name="description"
+          rows="3"
+          placeholder="A short description of the dish…"
+        ></textarea>
+      </div>
+
+      <!-- Steps -->
+      <div class="field">
+        <label for="steps">Steps * <span class="hint">(one step per line)</span></label>
+        <textarea
+          id="steps"
+          [(ngModel)]="stepsText"
+          name="stepsText"
+          rows="5"
+          placeholder="Mix dry ingredients&#10;Add wet ingredients&#10;Cook on medium heat"
+          required
+        >
+        </textarea>
+      </div>
+
+      <!-- Ingredients -->
+      <div class="field">
+        <label>Ingredients</label>
+        @for (ing of ingredients(); track $index) {
+          <div class="ingredient-row">
+            <input
+              type="text"
+              [(ngModel)]="ingredients()[$index].name"
+              [name]="'ing-name-' + $index"
+              placeholder="e.g. Flour"
+            />
+            <input
+              type="text"
+              [(ngModel)]="ingredients()[$index].quantity"
+              [name]="'ing-qty-' + $index"
+              placeholder="e.g. 2 cups"
+            />
+            <button
+              type="button"
+              class="btn-remove"
+              (click)="removeIngredient($index)"
+              aria-label="Remove ingredient"
+            >
+              ✕
+            </button>
+          </div>
+        }
+        <button type="button" class="btn-add-ing" (click)="addIngredient()">
+          + Add ingredient
+        </button>
+      </div>
+
+      <!-- Categories -->
+      <div class="field">
+        <label>Categories</label>
+        <div class="cat-grid">
+          @for (cat of categories(); track cat.categoryId) {
+            <label
+              class="cat-check"
+              [class.selected]="selectedCategoryIds().includes(cat.categoryId)"
+            >
+              <input
+                type="checkbox"
+                [id]="'cat-' + cat.categoryId"
+                [checked]="selectedCategoryIds().includes(cat.categoryId)"
+                (change)="toggleCategory(cat.categoryId)"
+              />
+              {{ cat.name }}
+            </label>
+          }
+        </div>
+      </div>
+
+      <!-- Image -->
+      <div class="field">
+        <label for="image-upload">Photo</label>
+        @if (imagePreview()) {
+          <img [src]="imagePreview()!" alt="Preview" class="img-preview" />
+        }
+        <input id="image-upload" type="file" accept="image/*" (change)="onFileChange($event)" />
+        <p class="hint">Max 5 MB. JPEG / PNG / WebP.</p>
+      </div>
+
+      <button type="submit" class="btn-submit" [disabled]="loading()">
+        {{ loading() ? 'Saving…' : isEdit ? 'Save changes' : 'Create recipe' }}
+      </button>
+    </form>
+  </div>
+</div>
